@@ -9,10 +9,9 @@ from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 import numpy as np
 import pytest
 
-from renderer import List, Tuple
 from renderer.utils import transpose_for_display
 
-PRNG_KEYS: List[random.KeyArray] = [random.key(20230701)]
+PRNG_KEYS: list[random.KeyArray] = [random.key(20230701)]
 
 
 class TestTransposeForDisplay:
@@ -25,7 +24,7 @@ class TestTransposeForDisplay:
     def test_transposed_shape_must_be_flipped_along_first_two_axis(
         self,
         PRNG_KEY: random.KeyArray,
-        shape: Tuple[int, ...],
+        shape: tuple[int, ...],
         flip_vertical: bool,
     ):
         matrix: Shaped[Array, "fst snd *channel"]
@@ -54,7 +53,7 @@ class TestTransposeForDisplay:
     def test_transposed_unique_values_and_count_must_be_the_same(
         self,
         PRNG_KEY: random.KeyArray,
-        shape: Tuple[int, ...],
+        shape: tuple[int, ...],
         flip_vertical: bool,
     ):
         matrix: Shaped[Array, "fst snd *channel"]
@@ -88,7 +87,7 @@ class TestTransposeForDisplay:
     def test_flip_vertical(
         self,
         PRNG_KEY: random.KeyArray,
-        shape: Tuple[int, ...],
+        shape: tuple[int, ...],
     ):
         # transpose with flipping
         tf_f = partial(transpose_for_display, flip_vertical=True)

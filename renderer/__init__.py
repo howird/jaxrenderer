@@ -1,16 +1,6 @@
-from ._backport import (
-    DictT,
-    JaxFloating,
-    JaxInteger,
-    List,
-    NamedTuple,
-    ParamSpec,
-    Sequence,
-    Tuple,
-    Type,
-    TypeAlias,
-    replace_dict,
-)
+from collections.abc import Sequence
+from typing import NamedTuple, ParamSpec, TypeAlias, TypeVar
+
 from ._meta_utils import add_tracing_name
 from ._meta_utils import typed_jit as jit
 from .geometry import (
@@ -26,8 +16,25 @@ from .renderer import CameraParameters, LightParameters, Renderer, ShadowParamet
 from .scene import GUID, Scene
 from .shapes.capsule import UpAxis, create_capsule
 from .shapes.cube import create_cube
-from .types import Buffers, Colour, LightSource, SpecularMap, Texture, Vec3f
+from .types import (
+    Buffers,
+    Colour,
+    JaxFloating,
+    JaxInteger,
+    LightSource,
+    SpecularMap,
+    Texture,
+    Vec3f,
+)
 from .utils import build_texture_from_PyTinyrenderer, transpose_for_display
+
+K = TypeVar("K")
+V = TypeVar("V")
+DictT: TypeAlias = dict[K, V]
+
+
+def replace_dict(base: DictT[K, V], new: DictT[K, V]) -> DictT[K, V]:
+    return base | new
 
 __all__ = [
     "add_tracing_name",
@@ -46,7 +53,6 @@ __all__ = [
     "jit",
     "LightParameters",
     "LightSource",
-    "List",
     "merge_objects",
     "Model",
     "ModelObject",
@@ -65,8 +71,6 @@ __all__ = [
     "SpecularMap",
     "Texture",
     "transpose_for_display",
-    "Tuple",
-    "Type",
     "TypeAlias",
     "UpAxis",
     "Vec3f",

@@ -7,7 +7,6 @@ import jax.numpy as jnp
 from jaxtyping import Array, Float
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from ._backport import DictT, Tuple, replace_dict
 from .model import Model, ModelObject
 from .shapes.capsule import UpAxis, create_capsule
 from .shapes.cube import create_cube
@@ -25,13 +24,13 @@ class Scene(NamedTuple):
     """Max unique identifier among all objects in the scene. It equals to the
         numbers of models and objects ever created in the scene.
     """
-    models: DictT[GUID, Model] = {}
+    models: dict[GUID, Model] = {}
     """Models in the scene, indexed by their unique identifier."""
-    objects: DictT[GUID, ModelObject] = {}
+    objects: dict[GUID, ModelObject] = {}
     """Objects in the scene, indexed by their unique identifier."""
 
     @jaxtyped
-    def add_model(self, model: Model) -> Tuple["Scene", GUID]:
+    def add_model(self, model: Model) -> tuple["Scene", GUID]:
         """Add a model to the scene.
 
         Parameters:
@@ -51,10 +50,10 @@ class Scene(NamedTuple):
     @jaxtyped
     def add_cube(
         self,
-        half_extents: Union[Float[Array, "3"], Tuple[float, float, float]],
+        half_extents: Union[Float[Array, "3"], tuple[float, float, float]],
         diffuse_map: Texture,
-        texture_scaling: Union[Float[Array, "2"], Tuple[float, float], float],
-    ) -> Tuple["Scene", GUID]:
+        texture_scaling: Union[Float[Array, "2"], tuple[float, float], float],
+    ) -> tuple["Scene", GUID]:
         """Add a cube to the scene.
 
         Parameters:
@@ -105,7 +104,7 @@ class Scene(NamedTuple):
         half_height: float,
         up_axis: UpAxis,
         diffuse_map: Texture,
-    ) -> Tuple["Scene", GUID]:
+    ) -> tuple["Scene", GUID]:
         """Add a capsule to the scene.
 
         Parameters:
@@ -134,7 +133,7 @@ class Scene(NamedTuple):
         return self.add_model(model)
 
     @jaxtyped
-    def add_object_instance(self, model_id: GUID) -> Tuple["Scene", GUID]:
+    def add_object_instance(self, model_id: GUID) -> tuple["Scene", GUID]:
         """Add an object instance to the scene.
 
         Parameters:
@@ -206,18 +205,13 @@ class Scene(NamedTuple):
           - object_id: the unique identifier of the object to replace.
           - new_obj: the new object.
         """
-        return self._replace(
-            objects=replace_dict(
-                self.objects,
-                {object_id: new_obj},
-            )
-        )
+        return self._replace(objects=self.objects | {object_id: new_obj})
 
     @jaxtyped
     def set_object_position(
         self,
         object_id: GUID,
-        position: Union[Vec3f, Tuple[float, float, float]],
+        position: Union[Vec3f, tuple[float, float, float]],
     ) -> "Scene":
         """Set the position of an object in the scene.
 
@@ -239,7 +233,7 @@ class Scene(NamedTuple):
     def set_object_orientation(
         self,
         object_id: GUID,
-        orientation: Optional[Union[Vec4f, Tuple[float, float, float, float]]] = None,
+        orientation: Optional[Union[Vec4f, tuple[float, float, float, float]]] = None,
         rotation_matrix: Optional[Float[Array, "3 3"]] = None,
     ) -> "Scene":
         """Set the orientation of an object in the scene.
@@ -272,7 +266,7 @@ class Scene(NamedTuple):
     def set_object_local_scaling(
         self,
         object_id: GUID,
-        local_scaling: Union[Vec3f, Tuple[float, float, float]],
+        local_scaling: Union[Vec3f, tuple[float, float, float]],
     ) -> "Scene":
         """Set the local scaling of an object in the scene.
 

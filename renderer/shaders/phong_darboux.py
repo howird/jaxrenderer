@@ -1,7 +1,7 @@
 from __future__ import annotations  # tolerate "subscriptable 'type' for < 3.9
 
 from functools import partial
-from typing import NamedTuple, cast
+from typing import NamedTuple, TypeAlias, cast
 
 import jax
 import jax.lax as lax
@@ -10,7 +10,6 @@ from jax.tree_util import Partial
 from jaxtyping import Array, Bool, Float, Integer
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from .._backport import Tuple, TypeAlias
 from .._meta_utils import add_tracing_name
 from .._meta_utils import typed_jit as jit
 from ..geometry import (
@@ -35,7 +34,7 @@ from ..types import (
     Vec4f,
 )
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+  # pyright: ignore[reportUnknownMemberType]
 
 Triangle3f: TypeAlias = Float[Array, "3 3"]
 Triangle2f: TypeAlias = Float[Array, "3 2"]
@@ -122,7 +121,7 @@ class PhongTextureDarbouxShader(
         gl_InstanceID: ID,
         camera: Camera,
         extra: PhongTextureDarbouxExtraInput,
-    ) -> Tuple[PerVertex, PhongTextureDarbouxExtraFragmentData]:
+    ) -> tuple[PerVertex, PhongTextureDarbouxExtraFragmentData]:
         # Use gl_VertexID to index in `extra` buffer.
         assert isinstance(gl_VertexID, ID), gl_VertexID
         assert isinstance(gl_InstanceID, ID), gl_InstanceID
@@ -215,7 +214,7 @@ class PhongTextureDarbouxShader(
         gl_PointCoord: Vec2f,
         varying: PhongTextureDarbouxExtraFragmentData,
         extra: PhongTextureDarbouxExtraInput,
-    ) -> Tuple[PerFragment, PhongTextureDarbouxExtraFragmentData]:
+    ) -> tuple[PerFragment, PhongTextureDarbouxExtraFragmentData]:
         built_in: PerFragment = Shader.fragment(
             gl_FragCoord,
             gl_FrontFacing,
@@ -300,11 +299,11 @@ class PhongTextureDarbouxShader(
         gl_FragDepth: Float[Array, "primitives"],
         keeps: Bool[Array, "primitives"],
         extra: PhongTextureDarbouxExtraFragmentData,
-    ) -> Tuple[MixerOutput, PhongTextureDarbouxExtraMixerOutput]:
+    ) -> tuple[MixerOutput, PhongTextureDarbouxExtraMixerOutput]:
         mixer_output: MixerOutput
         extra_output: PhongTextureDarbouxExtraFragmentData
         mixer_output, extra_output = cast(
-            Tuple[MixerOutput, PhongTextureDarbouxExtraFragmentData],
+            tuple[MixerOutput, PhongTextureDarbouxExtraFragmentData],
             Shader.mix(gl_FragDepth, keeps, extra),
         )
         assert isinstance(mixer_output, MixerOutput)

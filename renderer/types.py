@@ -1,12 +1,11 @@
-from typing import Any, Generic, TypeVar, Union, cast
+from typing import Any, Generic, NamedTuple, TypeAlias, TypeVar, Union, cast
 
+from beartype import beartype as typechecker
 import jax
 import jax.lax as lax
 import jax.numpy as jnp
 from jaxtyping import Array, Bool, Float, Integer, Num
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
-
-from ._backport import JaxFloating, JaxInteger, NamedTuple, Tuple, Type, TypeAlias
 
 __all__ = [
     "JaxFloating",
@@ -40,7 +39,8 @@ __all__ = [
     "Buffers",
 ]
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+JaxFloating: TypeAlias = jnp.floating[Any]
+JaxInteger: TypeAlias = jnp.integer[Any]
 
 BoolV: TypeAlias = Bool[Array, ""]
 """JAX Array with single bool value.""" ""
@@ -96,12 +96,12 @@ class DtypeInfo(NamedTuple, Generic[_DtypeT]):
     min: _DtypeT
     max: _DtypeT
     bits: int
-    dtype: Type
+    dtype: type
 
     @classmethod
     @jaxtyped
     # cannot be jitted as `dtype` will not be a valid JAX type
-    def create(cls, dtype: Type[_DtypeT]) -> "DtypeInfo[_DtypeT]":
+    def create(cls, dtype: type[_DtypeT]) -> "DtypeInfo[_DtypeT]":
         with jax.ensure_compile_time_eval():
             if jnp.issubdtype(dtype, jnp.floating):  # pyright: ignore
                 finfo = jnp.finfo(dtype)
@@ -141,7 +141,7 @@ class LightSource(NamedTuple):
     colour: Colour = jax.numpy.ones(3)  # pyright: ignore[reportUnknownMemberType]
 
 
-_TargetsT = TypeVar("_TargetsT", bound=Tuple[Any, ...])
+_TargetsT = TypeVar("_TargetsT", bound=tuple[Any, ...])
 """Extra target buffers, must be in shape of (width, height, ...)."""
 
 

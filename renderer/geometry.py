@@ -2,15 +2,15 @@ from __future__ import annotations  # tolerate "subscriptable 'type' for < 3.9
 
 import enum
 from functools import partial
-from typing import NamedTuple, Optional, Union, cast
+from typing import NamedTuple, Optional, TypeAlias, Union, cast
 
+from beartype import beartype as typechecker
 import jax
 import jax.lax as lax
 import jax.numpy as jnp
 from jaxtyping import Array, Float, Integer, Num
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from ._backport import Tuple, TypeAlias
 from ._meta_utils import add_tracing_name
 from ._meta_utils import typed_jit as jit
 from .types import FloatV, JaxFloating, NumV, Triangle2Df, Vec2f, Vec2i, Vec3f, Vec4f
@@ -907,7 +907,7 @@ def compute_normal(triangle_verts: Float[Array, "3 3"]) -> Float[Array, "3"]:
 @partial(jit, inline=True)
 @add_tracing_name
 def quaternion(
-    rotation_axis: Union[Vec3f, Tuple[float, float, float]],
+    rotation_axis: Union[Vec3f, tuple[float, float, float]],
     rotation_angle: Union[FloatV, float],
 ) -> Vec4f:
     """Generate a quaternion rotation from a rotation axis and angle.
@@ -967,7 +967,7 @@ def quaternion_mul(quatA: Vec4f, quatB: Vec4f) -> Vec4f:
 @partial(jit, inline=True)
 @add_tracing_name
 def rotation_matrix(
-    rotation_axis: Union[Vec3f, Tuple[float, float, float]],
+    rotation_axis: Union[Vec3f, tuple[float, float, float]],
     rotation_angle: Union[FloatV, float],
 ) -> Float[Array, "3 3"]:
     """Generate a rotation matrix from a rotation axis and angle.

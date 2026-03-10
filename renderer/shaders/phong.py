@@ -9,14 +9,13 @@ import jax.numpy as jnp
 from jaxtyping import Array, Bool, Float
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from .._backport import Tuple
 from .._meta_utils import add_tracing_name
 from .._meta_utils import typed_jit as jit
 from ..geometry import Camera, normalise, to_homogeneous
 from ..shader import ID, MixerOutput, PerFragment, PerVertex, Shader
 from ..types import BoolV, Colour, LightSource, Texture, Vec2f, Vec3f, Vec4f
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+  # pyright: ignore[reportUnknownMemberType]
 
 
 class PhongTextureExtraInput(NamedTuple):
@@ -80,7 +79,7 @@ class PhongTextureShader(
         gl_InstanceID: ID,
         camera: Camera,
         extra: PhongTextureExtraInput,
-    ) -> Tuple[PerVertex, PhongTextureExtraFragmentData]:
+    ) -> tuple[PerVertex, PhongTextureExtraFragmentData]:
         # Use gl_VertexID to index in `extra` buffer.
         position: Vec4f = to_homogeneous(extra.position[gl_VertexID])
         gl_Position: Vec4f = camera.to_clip(position)
@@ -113,7 +112,7 @@ class PhongTextureShader(
         gl_PointCoord: Vec2f,
         varying: PhongTextureExtraFragmentData,
         extra: PhongTextureExtraInput,
-    ) -> Tuple[PerFragment, PhongTextureExtraFragmentData]:
+    ) -> tuple[PerFragment, PhongTextureExtraFragmentData]:
         built_in: PerFragment = Shader.fragment(
             gl_FragCoord,
             gl_FrontFacing,
@@ -171,11 +170,11 @@ class PhongTextureShader(
         gl_FragDepth: Float[Array, "primitives"],
         keeps: Bool[Array, "primitives"],
         extra: PhongTextureExtraFragmentData,
-    ) -> Tuple[MixerOutput, PhongTextureExtraMixerOutput]:
+    ) -> tuple[MixerOutput, PhongTextureExtraMixerOutput]:
         mixer_output: MixerOutput
         extra_output: PhongTextureExtraFragmentData
         mixer_output, extra_output = cast(
-            Tuple[MixerOutput, PhongTextureExtraFragmentData],
+            tuple[MixerOutput, PhongTextureExtraFragmentData],
             Shader.mix(gl_FragDepth, keeps, extra),
         )
         assert isinstance(mixer_output, MixerOutput)

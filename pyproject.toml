@@ -1,12 +1,14 @@
-[tool.poetry]
+[project]
 name = "jaxrenderer"
 version = "0.3.2"
 description = "Jax implementation of rasterizer renderer."
-authors = ["Joey Teng <joey.teng.dev@gmail.com>"]
-license = "Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/JoeyTeng/jaxrenderer"
-repository = "https://github.com/JoeyTeng/jaxrenderer"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [
+    { name = "Joey Teng", email = "joey.teng.dev@gmail.com" },
+    { name = "Howard Nguyen-Huu", email = "howardnguyenhuu@gmail.com" },
+]
 classifiers = [
     "Topic :: Multimedia :: Graphics :: 3D Rendering",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -20,55 +22,50 @@ classifiers = [
     "Natural Language :: English",
     "Typing :: Typed",
 ]
-packages = [
-    { include = "renderer" },
+dependencies = [
+    "beartype>=0.22.9",
+    "jax>=0.4.0",
+    "jaxlib>=0.4.0",
+    "jaxtyping>=0.2.19",
+    "numpy>=1.22.0",
+    "pyqt6>=6.10.2",
+    "typing_extensions>=4.3.0",
+    "matplotlib>=3.6.2",
 ]
-include = [
-    "LICENSE",
-    "README.md",
-    "changelog.md",
-    "pyproject.toml",
-]
 
-
-[tool.poetry.dependencies]
-python = "^3.8"
-jax = "^0.4.0"
-numpy = "^1.22.0"
-jaxlib = {version = "^0.4.0", source = "jax"}
-jaxtyping = [
-    {version = ">=0.2.13,<0.2.20", python = ">=3.8,<3.9"},
-    {version = "^0.2.19", python = "^3.9"}
-]
-importlib-metadata = "^6.6.0"
-typing_extensions = "^4.3.0"
-
-
-[tool.poetry.group.dev.dependencies]
-matplotlib = "^3.6.2"
-pillow = "^9.4.0"
-importlib-resources = "^5.12.0"
-
-
-[tool.poetry.group.test.dependencies]
-pre-commit = "^3.3.3"
-pytest = "^7.0.0"
-tox = "^4.0.0"
-
-
-[[tool.poetry.source]]
-name = "jax"
-url = "https://storage.googleapis.com/jax-releases/jax_releases.html"
-priority = "explicit"
-
-
-[tool.poetry.urls]
+[project.urls]
+Homepage = "https://github.com/JoeyTeng/jaxrenderer"
+Repository = "https://github.com/JoeyTeng/jaxrenderer"
 "Bug Tracker" = "https://github.com/JoeyTeng/jaxrenderer/issues"
 
+[dependency-groups]
+dev = [
+    "black>=23",
+    "isort>=5.12",
+    "pillow>=9.4.0",
+]
+test = [
+    "pre-commit>=3.3.3",
+    "pytest>=7,<8",
+    "tox>=4,<5",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.10.2"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "renderer"
+module-root = ""
+source-include = ["changelog.md"]
+
+[tool.uv.sources]
+jaxlib = { index = "jax" }
+
+[[tool.uv.index]]
+name = "jax"
+url = "https://storage.googleapis.com/jax-releases/jax_releases.html"
+format = "flat"
 
 
 [tool.pytest.ini_options]
@@ -90,7 +87,7 @@ only_modified = true
 skip_gitignore = true
 
 [tool.black]
-target-versions = ["py38", "py39", "py310", "py311"]
+target-versions = ["py311", "py312", "py313"]
 required-version = 23
 
 [tool.pyright]

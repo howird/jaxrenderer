@@ -1,5 +1,6 @@
 from typing import Union
 
+from beartype import beartype as typechecker
 import jax.numpy as jnp
 from jaxtyping import Array, Integer
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]

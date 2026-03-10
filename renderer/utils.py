@@ -3,13 +3,13 @@ from __future__ import annotations  # tolerate "subscriptable 'type' for < 3.9
 from functools import partial
 from typing import Sequence, Union, cast
 
+from beartype import beartype as typechecker
 import jax
 from jax import lax
 import jax.numpy as jnp
 from jaxtyping import Array, Integer, Num, Shaped
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from ._backport import Tuple
 from ._meta_utils import add_tracing_name
 from ._meta_utils import typed_jit as jit
 from .types import Canvas, IntV, Texture, ZBuffer
@@ -32,14 +32,13 @@ def get_value_from_index(
 
     return jax.vmap(jax.vmap(_get))(matrix, index)
 
-
 @jaxtyped
 @partial(jit, inline=True)
 @add_tracing_name
 def merge_canvases(
     zbuffers: Num[Array, "batch width height"],
     canvases: Shaped[Array, "batch width height channel"],
-) -> Tuple[ZBuffer, Canvas]:
+) -> tuple[ZBuffer, Canvas]:
     """Merge canvases by selecting each pixel with max z value in zbuffer,
     then merge zbuffer as well.
     """
@@ -68,7 +67,6 @@ def merge_canvases(
 
     return zbuffer, canvas
 
-
 @jaxtyped
 @partial(
     jit,
@@ -94,7 +92,6 @@ def transpose_for_display(
         mat = mat[::-1, ...]
 
     return mat
-
 
 @jaxtyped
 @add_tracing_name

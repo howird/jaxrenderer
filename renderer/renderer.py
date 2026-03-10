@@ -1,7 +1,7 @@
 from __future__ import annotations  # tolerate "subscriptable 'type' for < 3.9
 
 from functools import partial
-from typing import Any, NamedTuple, Optional, Sequence, TypeVar, Union, cast
+from typing import Any, NamedTuple, Optional, Sequence, TypeAlias, TypeVar, Union, cast
 
 import jax
 import jax.lax as lax
@@ -10,7 +10,6 @@ from jax.tree_util import tree_map
 from jaxtyping import Array, Bool, Integer
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from ._backport import Tuple, TypeAlias
 from ._meta_utils import add_tracing_name
 from ._meta_utils import typed_jit as jit
 from .geometry import Camera, Projection, View, Viewport, normalise
@@ -40,7 +39,7 @@ from .types import (
 DoubleSidedFaces: TypeAlias = Bool[Array, "faces"]
 """Whether to render both sides of each face (triangle primitive)."""
 
-TargetT = TypeVar("TargetT", bound=Tuple[Any])
+TargetT = TypeVar("TargetT", bound=tuple[Any])
 
 
 class CameraParameters(NamedTuple):
@@ -63,11 +62,11 @@ class CameraParameters(NamedTuple):
     """horizontal field of view, in degrees."""
     vfov: float = 45.0
     """vertical field of view, in degrees."""
-    position: Union[Vec3f, Tuple[float, float, float]] = jnp.ones(3)  # pyright: ignore
+    position: Union[Vec3f, tuple[float, float, float]] = jnp.ones(3)  # pyright: ignore
     """position of the camera in world space."""
-    target: Union[Vec3f, Tuple[float, float, float]] = jnp.zeros(3)  # pyright: ignore
+    target: Union[Vec3f, tuple[float, float, float]] = jnp.zeros(3)  # pyright: ignore
     """target of the camera."""
-    up: Union[Vec3f, Tuple[float, float, float]] = jnp.array(  # pyright: ignore
+    up: Union[Vec3f, tuple[float, float, float]] = jnp.array(  # pyright: ignore
         (0.0, 0.0, 1.0)
     )
     """up direction of the camera."""
@@ -210,7 +209,7 @@ class Renderer:
             1,
             dtype=jnp.single,
         ),
-    ) -> Buffers[Tuple[Canvas]]:
+    ) -> Buffers[tuple[Canvas]]:
         """Render the scene with the given camera.
 
         The dtype of `colour_default` and `zbuffer_default` will be used as the
@@ -235,7 +234,7 @@ class Renderer:
             (*_batch, width, height, colour_default.size),
             colour_default,
         )
-        buffers: Buffers[Tuple[Canvas]] = Buffers(
+        buffers: Buffers[tuple[Canvas]] = Buffers(
             zbuffer=zbuffer,
             targets=(canvas,),
         )
@@ -444,7 +443,7 @@ class Renderer:
         )
         assert isinstance(light, LightParameters), f"{light}"
 
-        buffers: Buffers[Tuple[Canvas]] = cls.create_buffers(
+        buffers: Buffers[tuple[Canvas]] = cls.create_buffers(
             width=width,
             height=height,
             colour_default=colour_default,

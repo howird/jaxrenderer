@@ -9,14 +9,13 @@ import jax.numpy as jnp
 from jaxtyping import Array, Bool, Float
 from jaxtyping import jaxtyped  # pyright: ignore[reportUnknownVariableType]
 
-from .._backport import Tuple
 from .._meta_utils import add_tracing_name
 from .._meta_utils import typed_jit as jit
 from ..geometry import Camera, normalise, to_homogeneous
 from ..shader import ID, MixerOutput, PerFragment, PerVertex, Shader
 from ..types import BoolV, Colour, FloatV, LightSource, Texture, Vec2f, Vec3f, Vec4f
 
-jax.config.update("jax_array", True)  # pyright: ignore[reportUnknownMemberType]
+  # pyright: ignore[reportUnknownMemberType]
 
 
 class GouraudTextureExtraInput(NamedTuple):
@@ -70,7 +69,7 @@ class GouraudTextureShader(
         gl_InstanceID: ID,
         camera: Camera,
         extra: GouraudTextureExtraInput,
-    ) -> Tuple[PerVertex, GouraudTextureExtraFragmentData]:
+    ) -> tuple[PerVertex, GouraudTextureExtraFragmentData]:
         # Use gl_VertexID to index in `extra` buffer.
         position: Vec4f = to_homogeneous(extra.position[gl_VertexID])
         gl_Position: Vec4f = camera.to_clip(position)
@@ -110,7 +109,7 @@ class GouraudTextureShader(
         gl_PointCoord: Vec2f,
         varying: GouraudTextureExtraFragmentData,
         extra: GouraudTextureExtraInput,
-    ) -> Tuple[PerFragment, GouraudTextureExtraFragmentData]:
+    ) -> tuple[PerFragment, GouraudTextureExtraFragmentData]:
         built_in: PerFragment = Shader.fragment(
             gl_FragCoord,
             gl_FrontFacing,
@@ -151,11 +150,11 @@ class GouraudTextureShader(
         gl_FragDepth: Float[Array, "primitives"],
         keeps: Bool[Array, "primitives"],
         extra: GouraudTextureExtraFragmentData,
-    ) -> Tuple[MixerOutput, GouraudTextureExtraMixerOutput]:
+    ) -> tuple[MixerOutput, GouraudTextureExtraMixerOutput]:
         mixer_output: MixerOutput
         extra_output: GouraudTextureExtraFragmentData
         mixer_output, extra_output = cast(
-            Tuple[MixerOutput, GouraudTextureExtraFragmentData],
+            tuple[MixerOutput, GouraudTextureExtraFragmentData],
             Shader.mix(gl_FragDepth, keeps, extra),
         )
         assert isinstance(mixer_output, MixerOutput)
